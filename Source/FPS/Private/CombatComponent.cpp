@@ -22,6 +22,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME(UCombatComponent, Inventory);
+	DOREPLIFETIME(UCombatComponent, CurrentWeapon);
 }
 
 void UCombatComponent::Initate_SwapWeapon()
@@ -48,6 +49,12 @@ void UCombatComponent::Initate_Aim_Released()
 {
 }
 
+void UCombatComponent::Equip(ABaseWeapon* Weapon)
+{
+	CurrentWeapon = Weapon;
+	CurrentWeapon->AttachToOwningPawn();
+}
+
 void UCombatComponent::SpawnInventory()
 {
 	if(GetOwner()->GetLocalRole() < ROLE_Authority)
@@ -63,9 +70,30 @@ void UCombatComponent::SpawnInventory()
 
 	if(Inventory.Num() > 0)
 	{
-		Inventory[0]->AttachToOwningPawn();
+		Equip(Inventory[0]);
 	}
 
+}
+
+void UCombatComponent::DestroyInventory()
+{
+	for(ABaseWeapon* Weapon : Inventory)
+	{
+		if(IsValid(Weapon))
+		{
+			Weapon->Destroy();
+		}
+	}
+}
+
+void UCombatComponent::OnRep_CurrentWeapon(ABaseWeapon* LastWeapon)
+{
+	if (!IsValid(CurrentWeapon))
+	{
+		return;
+	}
+
+	CurrentWeapon->AttachToOwningPawn();
 }
 
 ABaseWeapon* UCombatComponent::SpawnWeapon(TSubclassOf<ABaseWeapon> WeaponClass) const

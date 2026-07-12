@@ -21,6 +21,8 @@ public:
 
 	void AttachToOwningPawn() const;
 
+	virtual void OnRep_Instigator() override;
+
 protected:
 	virtual void BeginPlay() override;
 	

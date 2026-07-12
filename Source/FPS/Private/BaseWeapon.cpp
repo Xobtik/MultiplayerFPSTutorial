@@ -47,6 +47,12 @@ void ABaseWeapon::AttachToOwningPawn() const
 	
 }
 
+void ABaseWeapon::OnRep_Instigator()
+{
+	Super::OnRep_Instigator();
+	AttachToOwningPawn();
+}
+
 void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();

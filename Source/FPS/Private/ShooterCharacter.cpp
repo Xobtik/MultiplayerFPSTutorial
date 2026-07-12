@@ -50,6 +50,15 @@ void AShooterCharacter::BeginPlay()
 	
 }
 
+void AShooterCharacter::BeginDestroy()
+{
+	Super::BeginDestroy();
+	if(IsValid(Combat))
+	{
+		Combat->DestroyInventory();
+	}
+}
+
 
 // Called every frame
 void AShooterCharacter::Tick(float DeltaTime)
